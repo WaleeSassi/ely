@@ -20,7 +20,9 @@ mongoose
 	.catch((err) => {
 		console.error('MongoDB connection error:', err);
 	});
-
+app.get('/', async (req, res) => {
+	res.status(200).send('hello world !');
+});
 app.get('/customers/search', async (req, res) => {
 	const { name, age, customerID, ssn } = req.query;
 
