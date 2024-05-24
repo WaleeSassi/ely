@@ -3,7 +3,9 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const serverless = require('serverless-http');
 const Customer = require('./models/loans');
+const router = express.Router();
 
 const app = express();
 mongoose.set('debug', true);
@@ -20,10 +22,10 @@ mongoose
 	.catch((err) => {
 		console.error('MongoDB connection error:', err);
 	});
-app.get('/', async (req, res) => {
+router.get('/', async (req, res) => {
 	res.status(200).send('hello world !');
 });
-app.get('/customers/search', async (req, res) => {
+router.get('/customers/search', async (req, res) => {
 	const { name, age, customerID, ssn } = req.query;
 
 	try {
@@ -53,6 +55,5 @@ app.get('/customers/search', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-	console.log(`Server is running on http://localhost:${PORT}`);
-});
+app.use('/.netlify/functions/api', router);
+module.exports.handler = serverless(app);
